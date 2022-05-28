@@ -1,3 +1,51 @@
+# TruEra
+
+TruEra specific changes are in the `truera` branch.
+
+## Merge latest changes from upstream
+Fetch all tags (which will be releases) from upstream and push it to TruEra fork.
+```bash
+git fetch upstream --tags
+git push origin --tags
+```
+
+Update the `truera` branch with `master`.
+```bash
+git checkout master
+git merge upstream/master
+git push origin HEAD
+git checkout truera
+git rebase -i origin/master
+```
+
+We will keep the changes to minimum and hoping that there won't be any merge conflicts.
+
+## Generating a new build from a new release
+
+Official source for each release is maintained as a git tag. When generating a new TruEra version using a particular release
+start by checking out the tag as a branch. For instance, for v1.15.0 you will need:
+
+```bash
+git checkout -b release/v1.15.0 v1.15.0
+```
+
+Then cherry-pick the TruEra specific changes onto this branch. Currently there is only one change that needs to be cherry-picked.
+
+```bash
+git cherry-pick 0f8d45adec4032552bbc0f9c6a26815863b8b273
+git push --set-upstream origin release/v1.15.0
+```
+
+Build the source code:
+NOTE: Since we are increasing the line length, a lot of tests will fail legitimately, please ignore those.
+
+```bash
+mvn clean install -DskipTests
+```
+
+The Jar will be generated in `core/target/google-java-format-<verssion>-all-deps.jar`.
+
+
 # google-java-format
 
 `google-java-format` is a program that reformats Java source code to comply with
